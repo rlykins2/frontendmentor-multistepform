@@ -46,23 +46,19 @@
 
 <span>Please provide your name, email address, and phone number</span>
 
-
+<br>
 
 <label for="name">Name</label>
 <input type="text" placeholder="
-e.g. Stephen King" name="name">
+e.g. Stephen King" name="name" class="input1">
 
 <label for="email">Email Address</label>
-<input type="text" placeholder="e.g. stephenking@lorem.com">
+<input type="text" placeholder="e.g. stephenking@lorem.com" class="input1">
 
 <label for="phone">Phone Number</label>
-<input type="text" placeholder="e.g. +1 234 567 890">
+<input type="text" placeholder="e.g. +1 234 567 890" class="input1">
 
-<button>Next Step</button>
- 
-
-
-
+<button class="step-button">Next Step</button>
 </div>
 
 
@@ -100,6 +96,7 @@ e.g. Stephen King" name="name">
     align-items: center;
     color: var(--neutral-white);
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 .step-name{
@@ -117,6 +114,7 @@ e.g. Stephen King" name="name">
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
 
 .number-icon .active{
 
@@ -141,5 +139,26 @@ e.g. Stephen King" name="name">
 .step > *+*{
     margin: 1rem;
 }
+
+.step-button{
+    background-color: var(--primary-blue-1);
+    color: var(--neutral-white);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+
+}
+
+.input1{
+ padding: 1rem;
+ width: 100%;
+
+
+}
+
+
+.text
 
 </style>
