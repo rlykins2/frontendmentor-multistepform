@@ -1,9 +1,16 @@
+<script lang="ts">
+let monthly:boolean = false;
+</script>
+
+
+
+
 <body>
 <div class="form">
 <div class="form__navbar">
 <ul>
 <li class="form__step-indicator">
-    <div class="form__step-icon">1</div>
+    <div class="form__step-icon--active">1</div>
     <div>
     <span class="form__step-num">step 1</span> <br>
     <span class="form__step-name">your info</span>   
@@ -35,10 +42,9 @@
 </ul>    
 </div>  
 <div class="form__content"> 
-<!-- <div class="personal-info">
-<h1>Personal info</h1>
-<span>Please provide your name, email address, and phone number</span>
-
+<!-- <div class="form__personal-info">
+<h1 class="form__header">Personal info</h1>
+<span="form__description">Please provide your name, email address, and phone number</span>
 <br>
 
 <div>
@@ -59,14 +65,52 @@ e.g. Stephen King" name="name" class="form__input">
 </div> -->
 
 <div class="select-plan">
+<h1 class="form__header">Select your plan</h1> 
+<span class="form__description">You have the option of monthly or yearly billing.</span>
+<div class="form__plans">
+<div class="plan">
+  <img src="images/icon-arcade.svg" alt="" />
 
-
-
+  <div class="plan__description">
+  <div class="plan__name">Arcade</div>
+  <div class="plan__price">$9/mo</div>
+  <div class="plan__deal">2 months free</div>
+  </div>
+</div>
+ 
+<div class="plan">
+  <img src="images/icon-advanced.svg" alt="" />
+ 
+ <div class="plan__description">
+ <div class="plan__name">Advanced</div> 
+ <div class=plan__price>$12/mo</div>  
+ <div class=plan__deal>2 months free</div>
+ </div>
+</div>
+ 
+<div class="plan">
+<img src="images/icon-pro.svg" alt="" />
+  
+  <div class="plan__description">
+  <div class="plan__name">Pro</div> 
+  <div class="plan__price">$15/mo</div> 
+  <div class="plan__deal">2 months free</div>  
+  </div>
+</div>
 </div>
 
 
+<div class="form__time">
+Monthly   
+<label class="form__toggle">
+  <input type="checkbox">
+  <span class="form__slider"></span>
+</label>
+Yearly
+</div>
+</div>
 
-
+<button class="go-back">Go Back</button>
 <button class="step-button">Next Step</button>
 </div>
 
@@ -92,9 +136,10 @@ e.g. Stephen King" name="name" class="form__input">
     border-radius: 15px;
     display: flex;
     gap: 1rem;
+    min-height: 600px;
 }
 
-.form__step-icon{
+.form__step-icon, .form__step-icon--active{
     background-color: var(--primary-blue-2);
     border-radius: 50%;
     border: var(--neutral-white) solid 2px;
@@ -107,6 +152,13 @@ e.g. Stephen King" name="name" class="form__input">
     font-weight: bold;
     flex-shrink: 0;
 }
+
+.form__step-icon--active{
+ background-color: var(--primary-blue-4);
+ color: var(--primary-blue-1);
+ border-color: var(--primary-blue-4);
+}
+
 
 .form__step-num{
     font-variant: small-caps;
@@ -129,11 +181,6 @@ e.g. Stephen King" name="name" class="form__input">
     display: flex;
     flex-direction: column;
     gap: 1rem;
-
-}
-
-.number-icon .active{
-
 
 }
 
@@ -172,7 +219,6 @@ e.g. Stephen King" name="name" class="form__input">
     cursor:pointer;
 }
 
-
 .form__input{
  padding: 1rem;
  width: 100%;
@@ -183,12 +229,99 @@ e.g. Stephen King" name="name" class="form__input">
 }
 
 .form__input::placeholder{
- color: var(--neutral-gray-1);
- font-weight: bold;
+    color: var(--neutral-gray-1);
+    font-weight: bold;
 }
 
 .personal-info > *+*{
     margin: 1rem;
+}
+
+.form__plans{
+
+    display: flex;
+    gap: 1rem;
+
+}
+
+.plan{
+
+    border: solid var(--primary-blue-1) 1px;
+    padding: 1rem;
+    border-radius: 5px;
+    cursor:pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    min-height: 200px;
+}
+
+.plan__description{
+    
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: auto;
+}
+
+.plan__name{
+  font-size: 1.2rem;
+  font-weight: 400;
+
+}
+
+.plan__price{
+
+ font-weight: 500;
+ color: var(--neutral-gray-1);
+}
+
+.plan__deal{
+ font-weight: 500;
+
+}
+
+.form__time
+{
+    background-color: var(--neutral-gray-2);
+    padding: 1rem;
+    text-align: center; 
+}
+.form__toggle{
+    cursor:pointer;
+
+}
+
+.form__toggle > input{
+    display: none;
+}
+
+.form__slider, .form__slider--toggled{
+    width: 2.5rem;
+    height: 1.4rem;
+    background: orange;
+    display: inline-block;
+    border-radius: 30%;
+    position: relative;
+    margin: 0 1rem;
+    background-color: var(--primary-blue-1);
+}
+
+.form__slider::after, .form__slider--toggled::after{
+    content:'';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background-color: aliceblue;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.2s;
+}
+
+
+.form__slider--toggled::after{
+    right: 50%;
 }
 
 
