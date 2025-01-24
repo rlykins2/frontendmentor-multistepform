@@ -1,15 +1,14 @@
 <script lang="ts">
 import {fade} from 'svelte/transition';
 let toggled:boolean = false;
-let step:number = 2;
-let chosen_plan:string = null;
+let step:number = 3;
+let chosen_plan:string = "";
+let chosen_addons:Array<string> = []; 
 const something = () => {if (step < 5) step += 1};
 const somethingelse = () => {if (step > 1) step -= 1};
 </script>
 
-
 <div class="form">
-
 {#if step < 5}
 <div class="form__navbar">
 <ul>
@@ -93,7 +92,7 @@ e.g. Stephen King" name="name" class="form__input">
   </div>
 </label> 
 <label class="plan {chosen_plan === "Advanced" ? "active" : ""}">
-  <img src="images/icon-advanced.svg" alt="" />
+ <img src="images/icon-advanced.svg" alt="" />
  <input type="radio" style="display:none;" value="Advanced" bind:group={chosen_plan}>
  <div class="plan__description">
  <div class="plan__name">Advanced</div> 
@@ -138,13 +137,89 @@ e.g. Stephen King" name="name" class="form__input">
 
 {:else if step === 3}
 <div class="addons" in:fade>
+ <h1 class="form__header">Pick add-ons</h1> 
+  <span class="form__description">Add-ons help enhance your gaming experience</span> 
+  
+  <label class="addon {chosen_addons.includes("online-service") ? "active" : ""}">
+   <div class="styled-check {chosen_addons.includes("online-service") ? "active" : ""}">
+        <img src="images/icon-checkmark.svg" alt="">
+   </div> 
+   <input type="checkbox" style="display:none" value="online-service" bind:group={chosen_addons}>
+  <div class="addon__text">
+  <div class="addon__name">
+    Online service
+  </div> 
+  <div class="addon__description">
+    Access to multiplayer games
+  </div> 
+</div>
+{#if toggled}
+  <div class="addon__price">
+    +$10/yr
+  </div> 
+  {:else}
+  <div class="addon__price">
+    +$1/mo
+  </div>
+  {/if}
+</label>
 
+
+
+<label class="addon {chosen_addons.includes("larger-storage") ? "active" : ""}" >
+  <div class="styled-check {chosen_addons.includes("larger-storage") ? "active" : ""}">
+    <img src="images/icon-checkmark.svg" alt="">
+  </div> 
+  <input type="checkbox" style="display:none" value="larger-storage" bind:group={chosen_addons} on:click={() => console.log(chosen_addons)}>
+  <div class="addon__text">
+  <div class="addon__name">
+    Larger storage
+  </div> 
+  <div class="addon__description">
+    Extra 1TB of cloud save
+  </div> 
+
+
+</div>
+{#if toggled}
+  <div class="addon__price">
+    +$10/yr
+  </div> 
+  {:else}
+  <div class="addon__price">
+    +$2/mo
+  </div>
+  {/if}
+</label>
+
+
+<label class="addon {chosen_addons.includes("custom-profile") ? "active" : ""}">
+<div class="styled-check {chosen_addons.includes("custom-profile") ? "active" : ""}">
+    <img src="images/icon-checkmark.svg" alt="">
+</div> 
+<input type="checkbox" style="display:none" value="custom-profile" bind:group={chosen_addons}>
+  <div class="addon__text">
+  <div class="addon__name">
+    Customizable Profile
+  </div> 
+  <div class="addon__description">
+    Custom theme on your profile
+  </div> 
+</div>
+{#if toggled}
+  <div class="addon__price">
+    +$10/yr
+  </div> 
+  {:else}
+  <div class="addon__price">
+    +$2/mo
+  </div>
+  {/if}
+</label>
 </div>
 
 {:else if step === 4}
-
 <div class="summary" in:fade></div>
-
 {/if}
 
 {#if step > 1 && step < 5}
@@ -152,12 +227,10 @@ e.g. Stephen King" name="name" class="form__input">
 {/if}
 
 {#if step < 5}
-<button class="step-button" on:click={something}>Next Step</button>
+<button class="step-button" on:click={something}>{step < 4 ? "Next Step" : "Confirm"}</button>
 {/if}
 </div>
 </div>
-
-
 
 <style>
 
@@ -301,14 +374,13 @@ e.g. Stephen King" name="name" class="form__input">
     flex-direction: column;
     align-items: start;
     min-height: 200px;
+    user-select: none;
     transition: all .2s;
 }
 
 .plan:hover
 {
-
-border-color: var(--primary-blue-1);
-
+    border-color: var(--primary-blue-1);
 }
 
 .plan.active{
@@ -346,6 +418,7 @@ border-color: var(--primary-blue-1);
     background-color: var(--neutral-gray-2);
     padding: 1rem;
     text-align: center; 
+    user-select: none;
 }
 .form__toggle{
     cursor:pointer;
@@ -392,5 +465,69 @@ border-color: var(--primary-blue-1);
 .time__description.active{
     color: var(--primary-blue-1);
 }
+
+.form__addons > *+*{
+  margin-top: 2rem;
+}
+
+.addon{
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--neutral-gray-1);
+    border-radius: 5px;
+    padding: 1rem;
+    cursor: pointer;
+    gap: 1rem;
+    user-select: none;
+}
+
+.addon:hover{}
+
+
+.addon.active{
+    border: 1px solid var(--primary-blue-2);
+    background-color: var(--neutral-magnolia);
+}
+
+
+.styled-check{
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 5px;
+    border: var(--neutral-gray-1) 1px solid;
+    transition: background-color 0.2s;
+    background-color: white;
+    position: relative;
+}
+
+.styled-check.active{
+  background: var(--primary-blue-2);
+}
+
+.styled-check > img{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.styled-check.active > img{
+
+
+}
+
+/* .styled-check.active::before{
+    content: '';
+    background-image: url("images/icon-checkmark.svg");
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+} */
+
 
 </style>
