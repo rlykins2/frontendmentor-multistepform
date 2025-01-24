@@ -1,23 +1,28 @@
 <script lang="ts">
-let monthly:boolean = false;
+import {fade} from 'svelte/transition';
+let toggled:boolean = false;
+let step:number = 2;
+let chosen_plan:string = null;
+const something = () => {if (step < 5) step += 1};
+const somethingelse = () => {if (step > 1) step -= 1};
 </script>
 
 
-
-
-<body>
 <div class="form">
+
+{#if step < 5}
 <div class="form__navbar">
 <ul>
 <li class="form__step-indicator">
-    <div class="form__step-icon--active">1</div>
+    <div class="form__step-icon {step == 1? 'active': ''}">1</div>
     <div>
     <span class="form__step-num">step 1</span> <br>
     <span class="form__step-name">your info</span>   
     </div>
 </li>
+
 <li class="form__step-indicator"> 
-    <div class="form__step-icon">2</div>
+    <div class="form__step-icon {step == 2? 'active': ''}">2</div>
     <div>
     <span class="form__step-num">step 2</span> <br>
     <span class="form__step-name">select plan</span>   
@@ -25,7 +30,7 @@ let monthly:boolean = false;
 </li>
 
 <li class="form__step-indicator"> 
-    <div class="form__step-icon">3</div>
+    <div class="form__step-icon {step == 3? 'active': ''}">3</div>
     <div>
     <span class="form__step-num">step 3</span> <br>
     <span class="form__step-name">addons</span>   
@@ -33,18 +38,23 @@ let monthly:boolean = false;
 </li>
 
 <li class="form__step-indicator"> 
-    <div class="form__step-icon">4</div>
+    <div class="form__step-icon {step == 4? 'active': ''}">4</div>
     <div>
     <span class="form__step-num">step 4</span> <br>
     <span class="form__step-name">summary</span>   
     </div>
 </li>
 </ul>    
-</div>  
+</div> 
+{/if}
+
+
 <div class="form__content"> 
-<!-- <div class="form__personal-info">
+
+{#if step === 1}   
+<div class="form__personal-info" in:fade>
 <h1 class="form__header">Personal info</h1>
-<span="form__description">Please provide your name, email address, and phone number</span>
+<span class="form__description">Please provide your name, email address, and phone number</span>
 <br>
 
 <div>
@@ -62,61 +72,91 @@ e.g. Stephen King" name="name" class="form__input">
 <label for="phone">Phone Number</label>
 <input type="text" placeholder="e.g. +1 234 567 890" class="form__input">
 </div>
-</div> -->
+</div>
 
-<div class="select-plan">
+{:else if step === 2}
+<div class="select-plan" in:fade>
 <h1 class="form__header">Select your plan</h1> 
 <span class="form__description">You have the option of monthly or yearly billing.</span>
 <div class="form__plans">
-<div class="plan">
+<label class="plan {chosen_plan === "Arcade" ? "active" : ""}">
   <img src="images/icon-arcade.svg" alt="" />
-
+  <input type="radio" style="display:none;" value="Arcade" bind:group={chosen_plan}>
   <div class="plan__description">
   <div class="plan__name">Arcade</div>
-  <div class="plan__price">$9/mo</div>
+  {#if toggled}
+  <div class="plan__price"> $90/yr</div>
   <div class="plan__deal">2 months free</div>
+  {:else}
+  <div class="plan__price">$9/mo</div>
+  {/if}
   </div>
-</div>
- 
-<div class="plan">
+</label> 
+<label class="plan {chosen_plan === "Advanced" ? "active" : ""}">
   <img src="images/icon-advanced.svg" alt="" />
- 
+ <input type="radio" style="display:none;" value="Advanced" bind:group={chosen_plan}>
  <div class="plan__description">
  <div class="plan__name">Advanced</div> 
- <div class=plan__price>$12/mo</div>  
- <div class=plan__deal>2 months free</div>
- </div>
+ {#if toggled}
+ <div class="plan__price"> $120/yr</div>
+ <div class="plan__deal">2 months free</div>
+ {:else}
+ <div class="plan__price">$12/mo</div>  
+ {/if}
 </div>
+</label>
  
-<div class="plan">
+<label class="plan {chosen_plan === "Pro" ? "active" : ""}">
+<input type="radio" style="display:none;" value="Pro" bind:group={chosen_plan} >
 <img src="images/icon-pro.svg" alt="" />
-  
   <div class="plan__description">
   <div class="plan__name">Pro</div> 
+  {#if toggled}
+  <div class="plan__price"> $150/yr</div>
+  <div class="plan__deal">2 months free</div>
+  {:else}
   <div class="plan__price">$15/mo</div> 
-  <div class="plan__deal">2 months free</div>  
-  </div>
+  {/if}
 </div>
+</label>
 </div>
 
 
 <div class="form__time">
-Monthly   
+<span class="time__description {!toggled ? "active": ""}">Monthly</span>   
+
+
 <label class="form__toggle">
-  <input type="checkbox">
-  <span class="form__slider"></span>
+  <input type="checkbox" bind:checked={toggled}>
+  <span class={["form__slider", {toggled}]}></span>
 </label>
-Yearly
+
+<span class="time__description {toggled ? "active" : ""}">Yearly</span>
 </div>
 </div>
 
-<button class="go-back">Go Back</button>
-<button class="step-button">Next Step</button>
+
+{:else if step === 3}
+<div class="addons" in:fade>
+
 </div>
 
+{:else if step === 4}
 
+<div class="summary" in:fade></div>
+
+{/if}
+
+{#if step > 1 && step < 5}
+<button class="go-back-button" on:click={somethingelse}>Go Back</button>
+{/if}
+
+{#if step < 5}
+<button class="step-button" on:click={something}>Next Step</button>
+{/if}
 </div>
-</body>
+</div>
+
 
 
 <style>
@@ -139,7 +179,7 @@ Yearly
     min-height: 600px;
 }
 
-.form__step-icon, .form__step-icon--active{
+.form__step-icon{
     background-color: var(--primary-blue-2);
     border-radius: 50%;
     border: var(--neutral-white) solid 2px;
@@ -153,7 +193,7 @@ Yearly
     flex-shrink: 0;
 }
 
-.form__step-icon--active{
+.form__step-icon.active{
  background-color: var(--primary-blue-4);
  color: var(--primary-blue-1);
  border-color: var(--primary-blue-4);
@@ -204,7 +244,7 @@ Yearly
     margin: 1rem;
 }
 
-.step-button{
+.go-back-button, .step-button{
     background-color: var(--primary-blue-1);
     color: var(--neutral-white);
     padding: 1rem 1.5rem;
@@ -215,7 +255,14 @@ Yearly
     align-self: self-end;
 }
 
-.step-button:hover{
+.go-back-button{
+    align-self: self-start;
+    color: var(--neutral-gray-1);
+    background-color: white;
+}
+
+
+.step-button:hover, .go-back-button:hover{
     cursor:pointer;
 }
 
@@ -246,7 +293,7 @@ Yearly
 
 .plan{
 
-    border: solid var(--primary-blue-1) 1px;
+    border: solid var(--neutral-gray-2) 1px;
     padding: 1rem;
     border-radius: 5px;
     cursor:pointer;
@@ -254,6 +301,19 @@ Yearly
     flex-direction: column;
     align-items: start;
     min-height: 200px;
+    transition: all .2s;
+}
+
+.plan:hover
+{
+
+border-color: var(--primary-blue-1);
+
+}
+
+.plan.active{
+    border-color: var(--primary-blue-1);
+    background-color: var(--neutral-magnolia);
 }
 
 .plan__description{
@@ -301,13 +361,13 @@ Yearly
     height: 1.4rem;
     background: orange;
     display: inline-block;
-    border-radius: 30%;
+    border-radius: 40%;
     position: relative;
     margin: 0 1rem;
     background-color: var(--primary-blue-1);
 }
 
-.form__slider::after, .form__slider--toggled::after{
+.form__slider::after{
     content:'';
     position: absolute;
     width: 1rem;
@@ -315,14 +375,22 @@ Yearly
     background-color: aliceblue;
     border-radius: 50%;
     top: 50%;
-    transform: translateY(-50%);
-    transition: all 0.2s;
+    transform: translate(-100%,-50%);
+    transition: transform 0.2s;
 }
 
 
-.form__slider--toggled::after{
-    right: 50%;
+.form__slider.toggled::after{
+   transform: translate(0%, -50%); 
 }
 
+.time__description{
+
+    color: var(--neutral-gray-1);
+}
+
+.time__description.active{
+    color: var(--primary-blue-1);
+}
 
 </style>
