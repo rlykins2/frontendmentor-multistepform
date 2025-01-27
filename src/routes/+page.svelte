@@ -17,9 +17,9 @@ type Addons = {
 };
 
 const addons:Addons = {
-["online-service"]:{name:"Online Service", description:"", monthly_price: 1, yearly_price:10}, 
-["custom-profile"]:{name:"Custom Profile", description:"", monthly_price: 2, yearly_price:20}, 
-["larger-storage"]:{name:"Larger Storage", description:"", monthly_price: 2, yearly_price:20}
+["online-service"]:{name:"Online Service", description:"Access to multiplayer games", monthly_price: 1, yearly_price:10}, 
+["custom-profile"]:{name:"Custom Profile", description:"Custom theme on your profile", monthly_price: 2, yearly_price:20}, 
+["larger-storage"]:{name:"Larger Storage", description:"Extra 1TB of cloud save", monthly_price: 2, yearly_price:20}
 };
 
 type Plan = {
@@ -118,47 +118,22 @@ e.g. Stephen King" name="name" class="form__input">
 <h1 class="form__header">Select your plan</h1> 
 <span class="form__description">You have the option of monthly or yearly billing.</span>
 <div class="form__plans">
-<label class="plan {chosen_plan === "arcade" ? "active" : ""}">
-  <img src="images/icon-arcade.svg" alt="" />
-  <input type="radio" style="display:none;" value="arcade" bind:group={chosen_plan}>
+
+{#each Object.keys(plans) as plan}
+<label class="plan {chosen_plan === plan ? "active" : ""}">
+  <img src="images/icon-{plan}.svg" alt="" />
+  <input type="radio" style="display:none;" value={plan} bind:group={chosen_plan}>
   <div class="plan__description">
-  <div class="plan__name">Arcade</div>
+  <div class="plan__name">{plans[plan].name}</div>
   {#if toggled}
-  <div class="plan__price"> $90/yr</div>
+  <div class="plan__price"> ${plans[plan].yearly_price}/yr</div>
   <div class="plan__deal">2 months free</div>
   {:else}
-  <div class="plan__price">$9/mo</div>
+  <div class="plan__price">${plans[plan].monthly_price}/mo</div>
   {/if}
   </div>
-</label> 
-
-<label class="plan {chosen_plan === "advanced" ? "active" : ""}">
- <img src="images/icon-advanced.svg" alt="" />
- <input type="radio" style="display:none;" value="advanced" bind:group={chosen_plan}>
- <div class="plan__description">
- <div class="plan__name">Advanced</div> 
- {#if toggled}
- <div class="plan__price"> $120/yr</div>
- <div class="plan__deal">2 months free</div>
- {:else}
- <div class="plan__price">$12/mo</div>  
- {/if}
-</div>
 </label>
- 
-<label class="plan {chosen_plan === "pro" ? "active" : ""}">
-<input type="radio" style="display:none;" value="pro" bind:group={chosen_plan} >
-<img src="images/icon-pro.svg" alt="" />
-  <div class="plan__description">
-  <div class="plan__name">Pro</div> 
-  {#if toggled}
-  <div class="plan__price"> $150/yr</div>
-  <div class="plan__deal">2 months free</div>
-  {:else}
-  <div class="plan__price">$15/mo</div> 
-  {/if}
-</div>
-</label>
+{/each}
 </div>
 
 
@@ -179,85 +154,35 @@ e.g. Stephen King" name="name" class="form__input">
 {:else if step === 3}
 <div class="addons" in:fade>
  <h1 class="form__header">Pick add-ons</h1> 
-  <span class="form__description">Add-ons help enhance your gaming experience</span> 
-  
-  <label class="addon {chosen_addons.includes("online-service") ? "active" : ""}">
-   <div class="styled-check {chosen_addons.includes("online-service") ? "active" : ""}">
+  <span class="form__description">Add-ons help enhance your gaming experience</span>   
+{#each Object.keys(addons) as addon}
+  <label class="addon {chosen_addons.includes(addon) ? "active" : ""}">
+   <div class="styled-check {chosen_addons.includes(addon) ? "active" : ""}">
         <img src="images/icon-checkmark.svg" alt="">
    </div> 
-   <input type="checkbox" style="display:none" value="online-service" bind:group={chosen_addons}>
+   <input type="checkbox" style="display:none" value={addon} bind:group={chosen_addons}>
   <div class="addon__text">
   <div class="addon__name">
-    Online service
+    {addons[addon].name}
   </div> 
   <div class="addon__description">
-    Access to multiplayer games
+    {addons[addon].description}
   </div> 
 </div>
 {#if toggled}
   <div class="addon__price">
-    +$10/yr
+    +${addons[addon].yearly_price}/yr
   </div> 
   {:else}
   <div class="addon__price">
-    +$1/mo
+    +${addons[addon].monthly_price}/mo
   </div>
   {/if}
 </label>
-
-
-
-<label class="addon {chosen_addons.includes("larger-storage") ? "active" : ""}" >
-  <div class="styled-check {chosen_addons.includes("larger-storage") ? "active" : ""}">
-    <img src="images/icon-checkmark.svg" alt="">
-  </div> 
-  <input type="checkbox" style="display:none" value="larger-storage" bind:group={chosen_addons} on:click={() => console.log(chosen_addons)}>
-  <div class="addon__text">
-  <div class="addon__name">
-    Larger storage
-  </div> 
-  <div class="addon__description">
-    Extra 1TB of cloud save
-  </div> 
-
-
+{/each}
 </div>
-{#if toggled}
-  <div class="addon__price">
-    +$10/yr
-  </div> 
-  {:else}
-  <div class="addon__price">
-    +$2/mo
-  </div>
-  {/if}
-</label>
 
 
-<label class="addon {chosen_addons.includes("custom-profile") ? "active" : ""}">
-<div class="styled-check {chosen_addons.includes("custom-profile") ? "active" : ""}">
-    <img src="images/icon-checkmark.svg" alt="">
-</div> 
-<input type="checkbox" style="display:none" value="custom-profile" bind:group={chosen_addons}>
-  <div class="addon__text">
-  <div class="addon__name">
-    Customizable Profile
-  </div> 
-  <div class="addon__description">
-    Custom theme on your profile
-  </div> 
-</div>
-{#if toggled}
-  <div class="addon__price">
-    +$10/yr
-  </div> 
-  {:else}
-  <div class="addon__price">
-    +$2/mo
-  </div>
-  {/if}
-</label>
-</div>
 
 {:else if step === 4}
 <div class="summary" in:fade>
