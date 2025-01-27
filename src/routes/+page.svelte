@@ -1,11 +1,51 @@
 <script lang="ts">
 import {fade} from 'svelte/transition';
 let toggled:boolean = false;
-let step:number = 3;
-let chosen_plan:string = "";
+let step:number = 4;
+let chosen_plan:string = "arcade";
 let chosen_addons:Array<string> = []; 
+
+type Addon = {
+  name: string;
+  description: string;
+  monthly_price: number;
+  yearly_price: number;
+};
+
+type Addons = {
+  [key in "online-service" | "custom-profile" | "larger-storage"]: Addon;
+};
+
+const addons:Addons = {
+["online-service"]:{name:"Online Service", description:"", monthly_price: 1, yearly_price:10}, 
+["custom-profile"]:{name:"Custom Profile", description:"", monthly_price: 2, yearly_price:20}, 
+["larger-storage"]:{name:"Larger Storage", description:"", monthly_price: 2, yearly_price:20}
+};
+
+type Plan = {
+  name: string;
+  monthly_price: number;
+  yearly_price: number;
+}
+
+type Plans = {
+  [key in "advanced" | "arcade" | "pro"] : Plan;
+}
+
+const plans:Plans = {
+["advanced"]: {name:"Advanced", monthly_price:9,  yearly_price:90},
+["arcade"]:   {name: "Arcade",  monthly_price:12, yearly_price:120},
+["pro"]:      {name: "Pro",     monthly_price:15, yearly_price:150}
+};
+
+$: total = toggled ?  plans[chosen_plan].yearly_price + chosen_addons.reduce((a,b) => a + addons[b].yearly_price, 0) : plans[chosen_plan].monthly_price
++ chosen_addons.reduce((a,b)=> a + addons[b].monthly_price, 0);
+
+
 const something = () => {if (step < 5) step += 1};
 const somethingelse = () => {if (step > 1) step -= 1};
+
+
 </script>
 
 <div class="form">
@@ -78,9 +118,9 @@ e.g. Stephen King" name="name" class="form__input">
 <h1 class="form__header">Select your plan</h1> 
 <span class="form__description">You have the option of monthly or yearly billing.</span>
 <div class="form__plans">
-<label class="plan {chosen_plan === "Arcade" ? "active" : ""}">
+<label class="plan {chosen_plan === "arcade" ? "active" : ""}">
   <img src="images/icon-arcade.svg" alt="" />
-  <input type="radio" style="display:none;" value="Arcade" bind:group={chosen_plan}>
+  <input type="radio" style="display:none;" value="arcade" bind:group={chosen_plan}>
   <div class="plan__description">
   <div class="plan__name">Arcade</div>
   {#if toggled}
@@ -91,9 +131,10 @@ e.g. Stephen King" name="name" class="form__input">
   {/if}
   </div>
 </label> 
-<label class="plan {chosen_plan === "Advanced" ? "active" : ""}">
+
+<label class="plan {chosen_plan === "advanced" ? "active" : ""}">
  <img src="images/icon-advanced.svg" alt="" />
- <input type="radio" style="display:none;" value="Advanced" bind:group={chosen_plan}>
+ <input type="radio" style="display:none;" value="advanced" bind:group={chosen_plan}>
  <div class="plan__description">
  <div class="plan__name">Advanced</div> 
  {#if toggled}
@@ -105,8 +146,8 @@ e.g. Stephen King" name="name" class="form__input">
 </div>
 </label>
  
-<label class="plan {chosen_plan === "Pro" ? "active" : ""}">
-<input type="radio" style="display:none;" value="Pro" bind:group={chosen_plan} >
+<label class="plan {chosen_plan === "pro" ? "active" : ""}">
+<input type="radio" style="display:none;" value="pro" bind:group={chosen_plan} >
 <img src="images/icon-pro.svg" alt="" />
   <div class="plan__description">
   <div class="plan__name">Pro</div> 
@@ -219,16 +260,46 @@ e.g. Stephen King" name="name" class="form__input">
 </div>
 
 {:else if step === 4}
-<div class="summary" in:fade></div>
+<div class="summary" in:fade>
+ <h1 class="form__header">
+    Finishing up
+ </h1>
+<span class="form__description">
+    Double-check everything looks OK before confirming.
+</span>
+  
+  <div class="form__summary-box">
+    <div>
+        {plans[chosen_plan].name} ({toggled ? 'Yearly' : 'Monthly'}) <button class="form__change-button" on:click={() => {step = 2;}}>Change</button>
+    </div>
+    <div class="form__plan-price">
+       {toggled ? `$${plans[chosen_plan].yearly_price}/yr` : `$${plans[chosen_plan].monthly_price}/mo`}
+    </div>
+</div>
+  {#each chosen_addons as addon}
+   <div class="form__addon-summary">
+    <div class="form__addon-name">{addons[addon].name}</div>
+    <div class="form__addon-price">{toggled ? `$${addons[addon].yearly_price}/yr` : `$${addons[addon].monthly_price}/mo`}</div> 
+</div> 
+  {/each}
+  <div class="total"><div class="total__indicator">Total (per { toggled ? "year" : "month"})</div> <span class="total__price">+${total}/{toggled ? "yr" : "mo"}</span></div>
+</div>
+
+
+
+
 {/if}
 
+
+<div class="button-bar">
 {#if step > 1 && step < 5}
 <button class="go-back-button" on:click={somethingelse}>Go Back</button>
 {/if}
-
 {#if step < 5}
 <button class="step-button" on:click={something}>{step < 4 ? "Next Step" : "Confirm"}</button>
 {/if}
+</div>
+
 </div>
 </div>
 
@@ -325,10 +396,11 @@ e.g. Stephen King" name="name" class="form__input">
     border: none;
     font-size: 1.1rem;
     font-weight: 500;
-    align-self: self-end;
+    margin-left: auto;
 }
 
 .go-back-button{
+    margin-left: 0;
     align-self: self-start;
     color: var(--neutral-gray-1);
     background-color: white;
@@ -366,7 +438,7 @@ e.g. Stephen King" name="name" class="form__input">
 
 .plan{
 
-    border: solid var(--neutral-gray-2) 1px;
+    border:  var(--neutral-gray-2) 1px solid;
     padding: 1rem;
     border-radius: 5px;
     cursor:pointer;
@@ -516,6 +588,64 @@ e.g. Stephen King" name="name" class="form__input">
 
 }
 
+.button-bar{
+  display: flex;
+
+}
+
+.form__change-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--primary-blue-2);
+    display: block;
+}
+
+.form__summary-box{
+    padding: 1rem;
+    border-radius: 5px 5px 0px 0px;
+    background-color: var(--neutral-magnolia);
+    border-bottom: solid 1px var(--neutral-gray-1);
+}
+
+.form__addon-summary{
+    padding: 1rem;
+    background-color: var(--neutral-magnolia); 
+    display: flex;
+}
+
+.form__addon-summary:last-child{
+    border-radius: 0 0 5px 5px;
+}
+.form__addon-name{
+    color: var(--neutral-gray-1);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form__addon-price{
+    margin-left: auto;
+    font-weight: 500;
+    color: var(--primary-blue-1);
+    font-size: 0.9rem;
+}
+
+.total__price{
+  font-size: 2rem;
+  color: var(--primary-blue-2);
+  margin-left: auto;
+  display: block;
+  font-weight: bold;
+}
+.total{
+  display: flex;
+  align-items: center;
+}
+.total__indicator{
+  font-weight: 500;
+  color: var(--neutral-gray-1);
+}
 /* .styled-check.active::before{
     content: '';
     background-image: url("images/icon-checkmark.svg");
