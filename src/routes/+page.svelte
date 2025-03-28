@@ -87,9 +87,7 @@ const somethingelse = () => {if (step > 1) step -= 1};
 </div> 
 {/if}
 
-
-<div class="form__content"> 
-
+<div class="form__content">
 {#if step === 1}   
 <div class="form__personal-info" in:fade>
 <h1 class="form__header">Personal info</h1>
@@ -136,7 +134,6 @@ e.g. Stephen King" name="name" class="form__input">
 {/each}
 </div>
 
-
 <div class="form__time">
 <span class="time__description {!toggled ? "active": ""}">Monthly</span>   
 
@@ -150,12 +147,14 @@ e.g. Stephen King" name="name" class="form__input">
 </div>
 </div>
 
-
 {:else if step === 3}
 <div class="addons" in:fade>
  <h1 class="form__header">Pick add-ons</h1> 
   <span class="form__description">Add-ons help enhance your gaming experience</span>   
-{#each Object.keys(addons) as addon}
+
+  <div class="form__addons">
+
+  {#each Object.keys(addons) as addon}
   <label class="addon {chosen_addons.includes(addon) ? "active" : ""}">
    <div class="styled-check {chosen_addons.includes(addon) ? "active" : ""}">
         <img src="images/icon-checkmark.svg" alt="">
@@ -181,8 +180,7 @@ e.g. Stephen King" name="name" class="form__input">
 </label>
 {/each}
 </div>
-
-
+</div>
 
 {:else if step === 4}
 <div class="summary" in:fade>
@@ -192,7 +190,7 @@ e.g. Stephen King" name="name" class="form__input">
 <span class="form__description">
     Double-check everything looks OK before confirming.
 </span>
-  
+
   <div class="form__summary-box">
     <div>
         {plans[chosen_plan].name} ({toggled ? 'Yearly' : 'Monthly'}) <button class="form__change-button" on:click={() => {step = 2;}}>Change</button>
@@ -209,10 +207,17 @@ e.g. Stephen King" name="name" class="form__input">
   {/each}
   <div class="total"><div class="total__indicator">Total (per { toggled ? "year" : "month"})</div> <span class="total__price">+${total}/{toggled ? "yr" : "mo"}</span></div>
 </div>
+{:else}
+  <div class="gratitude">
+  <div class="gratitude__icon"> 
+  <img src="images/icon-thank-you.svg" alt="">
+  </div>
+  <h1>Thank you!</h1>
 
-
-
-
+  <p>Thanks for confirming your subscription! We hope you have fun 
+  using our platform. If you ever need support, please feel free 
+  to email us at support@loremgaming.com.</p>
+  </div>
 {/if}
 
 
@@ -224,9 +229,10 @@ e.g. Stephen King" name="name" class="form__input">
 <button class="step-button" on:click={something}>{step < 4 ? "Next Step" : "Confirm"}</button>
 {/if}
 </div>
+</div>
+</div>
 
-</div>
-</div>
+
 
 <style>
 
@@ -239,13 +245,17 @@ e.g. Stephen King" name="name" class="form__input">
 }
 
 .form{
-    max-width: 80rem;
+    width: 50rem;
     padding: 1rem 2rem;
     background-color: var(--neutral-white);
     border-radius: 15px;
     display: flex;
     gap: 1rem;
-    min-height: 600px;
+    height: 600px;
+}
+
+.form__header{
+
 }
 
 .form__step-icon{
@@ -269,6 +279,29 @@ e.g. Stephen King" name="name" class="form__input">
 }
 
 
+.form__personal-info {
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+}
+
+.form__addons{
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.select-plan{
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+
+}
+
 .form__step-num{
     font-variant: small-caps;
     font-size: 0.75rem;
@@ -289,9 +322,10 @@ e.g. Stephen King" name="name" class="form__input">
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
+    gap: 1rem; 
 }
+
+
 
 .form__navbar{
   background-color: var(--primary-blue-2);
@@ -343,11 +377,18 @@ e.g. Stephen King" name="name" class="form__input">
  outline: none;
  border: solid var(--neutral-gray-2) 1px;
  font-weight: bold;
+ transition: all .2s;
 }
 
 .form__input::placeholder{
     color: var(--neutral-gray-1);
     font-weight: bold;
+}
+
+.form__input:focus{
+  outline-style: solid;
+  outline-color: var(--primary-blue-2);
+  outline-width: 2px;
 }
 
 .personal-info > *+*{
@@ -373,6 +414,7 @@ e.g. Stephen King" name="name" class="form__input">
     min-height: 200px;
     user-select: none;
     transition: all .2s;
+    flex-grow: 1;
 }
 
 .plan:hover
@@ -470,15 +512,24 @@ e.g. Stephen King" name="name" class="form__input">
 .addon{
     display: flex;
     align-items: center;
-    border: 1px solid var(--neutral-gray-1);
+    border: 1px solid var(--neutral-gray-2);
     border-radius: 5px;
     padding: 1rem;
     cursor: pointer;
     gap: 1rem;
     user-select: none;
+    transition: all .2s;
 }
 
-.addon:hover{}
+.addon__price{
+  margin-left: auto;
+}
+
+
+.addon:hover{
+ border: 1px solid var(--primary-blue-2);
+
+}
 
 
 .addon.active{
@@ -532,6 +583,13 @@ e.g. Stephen King" name="name" class="form__input">
     border-radius: 5px 5px 0px 0px;
     background-color: var(--neutral-magnolia);
     border-bottom: solid 1px var(--neutral-gray-1);
+    display: flex;
+    align-items: center;
+}
+
+.form__plan-price{
+  margin-left: auto;
+  font-size: 1.3rem;
 }
 
 .form__addon-summary{
@@ -556,6 +614,9 @@ e.g. Stephen King" name="name" class="form__input">
     font-size: 0.9rem;
 }
 
+.form__addons > *+*{ margin-top: 0.3rem;
+}
+
 .total__price{
   font-size: 2rem;
   color: var(--primary-blue-2);
@@ -567,10 +628,26 @@ e.g. Stephen King" name="name" class="form__input">
   display: flex;
   align-items: center;
 }
+
 .total__indicator{
   font-weight: 500;
   color: var(--neutral-gray-1);
 }
+
+.gratitude{
+  display: flex;
+  flex-direction: column;
+}
+
+.gratitude__icon{
+  width: 10rem;
+  height: 10rem;
+}
+
+.gratitude__icon > img {
+  max-width: 100%;
+}
+
 /* .styled-check.active::before{
     content: '';
     background-image: url("images/icon-checkmark.svg");
